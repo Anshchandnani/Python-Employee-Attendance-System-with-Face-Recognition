@@ -1,0 +1,302 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}
+Edit Leave
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-9">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-warning d-flex justify-content-between align-items-center py-3">
+
+                    <div>
+
+                        <h3 class="mb-1">
+                            Edit Leave Request
+                        </h3>
+
+                        <small class="text-dark">
+                            Update employee leave information
+                        </small>
+
+                    </div>
+
+                    {% if leave.status == "Approved" %}
+
+                        <span class="badge bg-success px-3 py-2">
+                            Approved
+                        </span>
+
+                    {% elif leave.status == "Rejected" %}
+
+                        <span class="badge bg-danger px-3 py-2">
+                            Rejected
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-dark px-3 py-2">
+                            Pending
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    {% if messages %}
+                        {% for message in messages %}
+
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+
+                            {{ message }}
+
+                            <button class="btn-close"
+                                    data-bs-dismiss="alert"></button>
+
+                        </div>
+
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if leave.status != "Pending" %}
+
+                    <div class="alert alert-warning">
+
+                        <strong>Notice:</strong>
+
+                        This leave request has already been
+                        <strong>{{ leave.status }}</strong>.
+                        It cannot be modified.
+
+                    </div>
+
+                    {% endif %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="fw-semibold mb-2">
+
+                                    Leave Type
+
+                                </label>
+
+                                {{ form.leave_type }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="fw-semibold mb-2">
+
+                                    Total Days
+
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="total_days"
+                                    class="form-control bg-light fw-bold"
+                                    readonly>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="fw-semibold mb-2">
+
+                                    Start Date
+
+                                </label>
+
+                                {{ form.start_date }}
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="fw-semibold mb-2">
+
+                                    End Date
+
+                                </label>
+
+                                {{ form.end_date }}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mb-4">
+
+                            <label class="fw-semibold mb-2">
+
+                                Reason
+
+                            </label>
+
+                            {{ form.reason }}
+
+                        </div>
+
+                        {% if leave.admin_remarks %}
+
+                        <div class="mb-4">
+
+                            <label class="fw-semibold mb-2">
+
+                                Admin Remarks
+
+                            </label>
+
+                            <textarea
+                                class="form-control bg-light"
+                                rows="4"
+                                readonly>{{ leave.admin_remarks }}</textarea>
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="row text-center mb-4">
+
+                            <div class="col-md-4">
+
+                                <div class="border rounded p-3">
+
+                                    <small class="text-muted">
+                                        Leave Status
+                                    </small>
+
+                                    <h5 class="mt-2">
+
+                                        {{ leave.status }}
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="border rounded p-3">
+
+                                    <small class="text-muted">
+                                        Applied On
+                                    </small>
+
+                                    <h6 class="mt-2">
+
+                                        {{ leave.created_at|date:"d M Y" }}
+
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="border rounded p-3">
+
+                                    <small class="text-muted">
+                                        Leave Days
+                                    </small>
+
+                                    <h5 class="mt-2">
+
+                                        {{ leave.total_days }}
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+
+                            <a href="{% url 'leave_list' %}"
+                               class="btn btn-outline-secondary">
+
+                                ← Back
+
+                            </a>
+
+                            {% if leave.status == "Pending" %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-warning px-4">
+
+                                Update Leave
+
+                            </button>
+
+                            {% endif %}
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const startDate = document.getElementById("id_start_date");
+const endDate = document.getElementById("id_end_date");
+const totalDays = document.getElementById("total_days");
+
+function calculateDays(){
+
+    if(startDate.value && endDate.value){
+
+        let start = new Date(startDate.value);
+        let end = new Date(endDate.value);
+
+        let diff = end - start;
+
+        let days = (diff / (1000 * 60 * 60 * 24)) + 1;
+
+        totalDays.value = days > 0 ? days : 0;
+
+    }
+
+}
+
+calculateDays();
+
+startDate.addEventListener("change", calculateDays);
+endDate.addEventListener("change", calculateDays);
+
+</script>
+
+{% endblock %}

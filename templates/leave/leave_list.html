@@ -1,0 +1,459 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}
+Leave Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+
+            <h4 class="mb-0">
+                Leave Management
+            </h4>
+
+            {% if not request.user.is_superuser %}
+            <a href="{% url 'apply_leave' %}" class="btn btn-light">
+                <i class="fas fa-plus"></i>
+                Apply Leave
+            </a>
+            {% endif %}
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+
+                        <input
+                            type="text"
+                            name="search"
+                            class="form-control"
+                            placeholder="Search Employee..."
+                            value="{{ search }}">
+
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+
+                        <select
+                            name="status"
+                            class="form-select">
+
+                            <option value="">
+                                All Status
+                            </option>
+
+                            <option value="Pending"
+                                {% if status == "Pending" %}selected{% endif %}>
+                                Pending
+                            </option>
+
+                            <option value="Approved"
+                                {% if status == "Approved" %}selected{% endif %}>
+                                Approved
+                            </option>
+
+                            <option value="Rejected"
+                                {% if status == "Rejected" %}selected{% endif %}>
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+
+                        <select
+                            name="leave_type"
+                            class="form-select">
+
+                            <option value="">
+                                All Types
+                            </option>
+
+                            <option value="Casual Leave">
+                                Casual Leave
+                            </option>
+
+                            <option value="Sick Leave">
+                                Sick Leave
+                            </option>
+
+                            <option value="Earned Leave">
+                                Earned Leave
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+
+                        <button
+                            class="btn btn-primary w-100">
+
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-striped align-middle">
+
+
+                    <thead class="table-primary text-center">
+                        <tr>
+
+                            <th>ID</th>
+
+                            {% if request.user.is_superuser %}
+                            <th>Employee</th>
+                            {% endif %}
+
+                            <th>Leave Type</th>
+
+                            <th>From</th>
+
+                            <th>To</th>
+
+                            <th>Status</th>
+
+                            <th>Days</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+                    {% for leave in page_obj %}
+
+<tr>
+
+    <td>
+
+        {{ leave.id }}
+
+    </td>
+
+    {% if request.user.is_superuser %}
+
+    <td>
+
+        <strong>
+
+            {{ leave.employee.employee_id }}
+
+        </strong>
+
+        <br>
+
+        <small class="text-muted">
+
+            {{ leave.employee.first_name }}
+            {{ leave.employee.last_name }}
+
+        </small>
+
+    </td>
+
+    {% endif %}
+
+    <td>
+
+        {% if leave.leave_type == "Casual Leave" %}
+
+<span class="badge bg-primary">
+    Casual
+</span>
+
+{% elif leave.leave_type == "Sick Leave" %}
+
+<span class="badge bg-danger">
+    Sick
+</span>
+
+{% elif leave.leave_type == "Earned Leave" %}
+
+<span class="badge bg-success">
+    Earned
+</span>
+
+{% else %}
+
+<span class="badge bg-secondary">
+    {{ leave.leave_type }}
+</span>
+
+{% endif %}
+
+    </td>
+
+    <td>
+
+        {{ leave.start_date }}
+
+    </td>
+
+    <td>
+
+        {{ leave.end_date }}
+
+    </td>
+
+    <td>
+
+        {% if leave.status == "Approved" %}
+
+            <span class="badge bg-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            Approved
+
+            </span>
+
+        {% elif leave.status == "Rejected" %}
+
+            <span class="badge bg-danger">
+
+            <i class="bi bi-x-circle-fill"></i>
+
+            Rejected
+
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-warning text-dark">
+
+            <i class="bi bi-clock-fill"></i>
+
+            Pending
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {{ leave.total_days }}
+
+    </td>
+
+    <td>
+
+        <div class="btn-group">
+
+            <a href="{% url 'leave_detail' leave.id %}"
+               class="btn btn-primary btn-sm"
+               title="View">
+
+                <i class="bi bi-eye-fill"></i>
+
+            </a>
+
+            {% if not request.user.is_superuser %}
+
+                {% if leave.status == "Pending" %}
+
+                <a href="{% url 'edit_leave' leave.id %}"
+                   class="btn btn-warning btn-sm"
+                   title="Edit">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                </a>
+
+                <a href="{% url 'cancel_leave' leave.id %}"
+
+                   class="btn btn-sm btn-secondary"
+
+                   onclick="return confirm('Cancel this leave request?')">
+
+                    Cancel
+
+                </a>
+
+                {% endif %}
+
+            {% else %}
+
+                {% if leave.status == "Pending" %}
+
+            <form method="post"
+                      action="{% url 'approve_leave' leave.id %}"
+                      class="d-inline">
+
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="btn btn-success btn-sm"
+                            onclick="return confirm('Approve this leave request?')">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                    </button>
+
+                </form>
+
+                <form method="post"
+                      action="{% url 'reject_leave' leave.id %}"
+                      class="d-inline">
+
+                    {% csrf_token %}
+
+                    <button type="submit"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Reject this leave request?')">
+
+                        <i class="bi bi-x-circle-fill"></i>
+
+                    </button>
+
+                </form>
+                {% endif %}
+
+                <a href="{% url 'delete_leave' leave.id %}"
+                   class="btn btn-danger btn-sm"
+                   onclick="return confirm('Delete this leave?')"
+                   title="Delete">
+
+                    <i class="bi bi-trash-fill"></i>
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+    <td colspan="8"
+
+        class="text-center text-muted py-4">
+
+        <h5>
+
+            No Leave Records Found
+
+        </h5>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<nav class="mt-4">
+
+    <ul class="pagination justify-content-center">
+
+        {% if page_obj.has_previous %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+
+               href="?page={{ page_obj.previous_page_number }}&search={{ search }}&status={{ status }}&leave_type={{ leave_type }}">
+
+                Previous
+
+            </a>
+
+        </li>
+
+        {% endif %}
+
+        {% for page in page_obj.paginator.page_range %}
+
+        <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+
+            <a class="page-link"
+
+               href="?page={{ page }}&search={{ search }}&status={{ status }}&leave_type={{ leave_type }}">
+
+                {{ page }}
+
+            </a>
+
+        </li>
+
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+
+        <li class="page-item">
+
+            <a class="page-link"
+
+               href="?page={{ page_obj.next_page_number }}&search={{ search }}&status={{ status }}&leave_type={{ leave_type }}">
+
+                Next
+
+            </a>
+
+        </li>
+
+        {% endif %}
+
+    </ul>
+
+</nav>
+
+<div class="text-center text-muted mt-2">
+
+    Showing
+
+    {{ page_obj.start_index }}
+
+    -
+
+    {{ page_obj.end_index }}
+
+    of
+
+    {{ page_obj.paginator.count }}
+
+    records
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

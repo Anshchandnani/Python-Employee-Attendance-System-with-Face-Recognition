@@ -1,0 +1,372 @@
+{% extends "employee_base.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Welcome -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                Welcome, {{ emp.first_name }} {{ emp.last_name }}
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Employee ID: <strong>{{ emp.employee_id }}</strong>
+
+            </p>
+
+        </div>
+
+        <a href="{% url 'start_recognition' %}"
+           class="btn btn-danger btn-lg">
+
+            <i class="fas fa-camera me-2"></i>
+
+            Mark Attendance
+
+        </a>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 bg-primary text-white">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-calendar-check fa-2x mb-3"></i>
+
+                    <h6>Total Attendance</h6>
+
+                    <h2 class="fw-bold">
+
+                        {{ total_attendance }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card shadow border-0 bg-success text-white">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-building fa-2x mb-3"></i>
+
+                    <h6>Department</h6>
+
+                    <h4 class="fw-bold">
+
+                        {{ emp.department }}
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+
+            <div class="card shadow border-0 bg-warning text-dark">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-briefcase fa-2x mb-3"></i>
+
+                    <h6>Designation</h6>
+
+                    <h4 class="fw-bold">
+
+                        {{ emp.designation }}
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Attendance -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-header bg-dark shadow text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-calendar-check me-2"></i>
+
+                Recent Attendance
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Date</th>
+
+                            <th>Check In</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for a in recent_attendance %}
+
+                        <tr>
+
+                            <td>{{ a.date }}</td>
+
+                            <td>
+
+                                {% if a.check_in %}
+
+                                    {{ a.check_in|time:"h:i A" }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                {% if a.status == "Present" %}
+
+                                    <span class="badge bg-success">
+
+                                        Present
+
+                                    </span>
+
+                                {% elif a.status == "Late" %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Late
+
+                                    </span>
+
+                                {% elif a.status == "Half Day" %}
+
+                                    <span class="badge bg-info text-dark">
+
+                                        Half Day
+
+                                    </span>
+
+                                {% elif a.status == "Leave" %}
+
+                                    <span class="badge bg-primary">
+
+                                        Leave
+
+                                    </span>
+
+                                {% elif a.status == "Absent" %}
+
+                                    <span class="badge bg-danger">
+
+                                        Absent
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-secondary">
+
+                                        {{ a.status }}
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="3" class="text-center py-4">
+
+                                No Attendance Records Found
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Upcoming Leave Requests -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-warning text-dark">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-plane-departure me-2"></i>
+
+                Upcoming Leave Requests
+
+            </h5>
+
+        </div>
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Leave Type</th>
+
+                            <th>From</th>
+
+                            <th>To</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for leave in upcoming_leaves %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ leave.leave_type }}
+
+                            </td>
+
+                            <td>
+
+                                {{ leave.start_date }}
+
+                            </td>
+
+                            <td>
+
+                                {{ leave.end_date }}
+
+                            </td>
+
+                            <td>
+
+                                {% if leave.status == "Approved" %}
+
+                                    <span class="badge bg-success">
+
+                                        Approved
+
+                                    </span>
+
+                                {% elif leave.status == "Pending" %}
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Pending
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger">
+
+                                        Rejected
+
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="4" class="text-center py-4">
+
+                                No Upcoming Leave Requests
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

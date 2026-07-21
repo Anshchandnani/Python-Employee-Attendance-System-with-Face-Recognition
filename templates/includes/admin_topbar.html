@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-between align-items-center bg-white shadow-sm rounded p-3 mb-4">
+
+    <div>
+
+        <h3 class="fw-bold mb-0">
+
+            {% block page_title %}
+            Dashboard
+            {% endblock %}
+
+        </h3>
+
+        <small class="text-muted">
+
+            Employee Management System
+
+        </small>
+
+    </div>
+
+    <div class="d-flex align-items-center">
+
+        <div class="text-end me-3">
+
+            <small class="text-muted d-block">
+
+                Welcome Back
+
+            </small>
+
+            <strong>
+
+                {{ request.user.username }}
+
+            </strong>
+
+        </div>
+
+        <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center text-white"
+             style="width:45px; height:45px;">
+
+            <i class="fas fa-user"></i>
+
+        </div>
+
+    </div>
+
+</div>

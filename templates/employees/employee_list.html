@@ -1,0 +1,292 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}
+Employee Management
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Employee Management
+            </h2>
+
+            <p class="text-muted">
+                Manage employee information and records.
+            </p>
+        </div>
+
+        <a href="{% url 'add_employee' %}" class="btn btn-success">
+            <i class="bi bi-person-plus-fill"></i>
+            Add Employee
+        </a>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <i class="bi bi-people-fill text-primary fs-1"></i>
+
+                    <h6 class="mt-2 text-muted">
+                        Total Employees
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ total_employees }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <i class="bi bi-person-check-fill text-success fs-1"></i>
+
+                    <h6 class="mt-2 text-muted">
+                        Active Employees
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ active_employees }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card shadow border-0 text-center">
+
+                <div class="card-body">
+
+                    <i class="bi bi-building text-warning fs-1"></i>
+
+                    <h6 class="mt-2 text-muted">
+                        Departments
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ total_departments }}
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Search -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <form method="GET">
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="search"
+                        value="{{ search }}"
+                        placeholder="Search by Employee ID, Name, Email...">
+
+                    <button class="btn btn-primary">
+                        <i class="bi bi-search"></i>
+                        Search
+                    </button>
+
+                    <a href="{% url 'employee_list' %}"
+                       class="btn btn-outline-secondary">
+
+                        Reset
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Employee Cards -->
+
+    <div class="row">
+
+        {% for emp in employees %}
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-body text-center">
+
+                    {% if emp.photo %}
+
+                        <img src="{{ emp.photo.url }}"
+                             class="rounded-circle border border-3 mb-3"
+                             width="120"
+                             height="120"
+                             style="object-fit:cover;">
+
+                    {% else %}
+
+                        <img src="https://via.placeholder.com/120"
+                             class="rounded-circle border border-3 mb-3">
+
+                    {% endif %}
+
+                    <h5 class="fw-bold">
+
+                        {{ emp.first_name }}
+                        {{ emp.last_name }}
+
+                    </h5>
+
+                    <p class="text-muted mb-1">
+
+                        {{ emp.employee_id }}
+
+                    </p>
+
+                    <p class="mb-2">
+
+                        {{ emp.email }}
+
+                    </p>
+
+                    <span class="badge bg-info">
+
+                        {{ emp.department }}
+
+                    </span>
+
+                    <span class="badge bg-secondary">
+
+                        {{ emp.designation }}
+
+                    </span>
+
+                    <hr>
+
+                    {% if emp.is_active %}
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            Active
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger px-3 py-2">
+
+                            Inactive
+
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="card-footer bg-white border-0">
+
+                    <div class="d-grid gap-2">
+
+                        <a href="{% url 'employee_profile' emp.employee_id %}"
+                           class="btn btn-primary">
+
+                            <i class="bi bi-person"></i>
+
+                            View Profile
+
+                        </a>
+
+                        <div class="btn-group">
+
+                            <a href="{% url 'update_employee' emp.employee_id %}"
+                               class="btn btn-warning">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                                Edit
+
+                            </a>
+
+                            <a href="{% url 'delete_employee' emp.employee_id %}"
+                               class="btn btn-danger"
+                               onclick="return confirm('Delete this employee?')">
+
+                                <i class="bi bi-trash"></i>
+
+                                Delete
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info text-center shadow">
+
+                <h4>
+
+                    No Employees Found
+
+                </h4>
+
+                <p>
+
+                    Try changing your search or add a new employee.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

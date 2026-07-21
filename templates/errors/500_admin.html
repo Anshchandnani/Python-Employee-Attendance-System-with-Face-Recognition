@@ -1,0 +1,28 @@
+{% extends "admin_base.html" %}
+
+{% block title %}500{% endblock %}
+
+{% block content %}
+
+<div class="container text-center mt-5">
+
+    <h1 class="display-1 text-danger">
+        500
+    </h1>
+
+    <h3>Internal Server Error</h3>
+
+    <p class="text-muted">
+        Something went wrong on our server. Please try again later.
+    </p>
+
+    <a href="{% url 'admin_dashboard' %}"
+       class="btn btn-primary">
+
+        Back to Dashboard
+
+    </a>
+
+</div>
+
+{% endblock %}

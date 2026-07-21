@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2 class="fw-bold">
+
+        Employee Attendance Dashboard
+
+    </h2>
+
+    <a href="{% url 'start_recognition' %}"
+       class="btn btn-danger">
+
+        📷 Start Face Recognition
+
+    </a>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-3">
+
+        <div class="card shadow border-0 bg-primary text-white">
+
+            <div class="card-body text-center">
+
+                <h6>Total Employees</h6>
+
+                <h1>{{ total_employees }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card shadow border-0 bg-success text-white">
+
+            <div class="card-body text-center">
+
+                <h6>Present Today</h6>
+
+                <h1>{{ present_today }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card shadow border-0 bg-danger text-white">
+
+            <div class="card-body text-center">
+
+                <h6>Absent Today</h6>
+
+                <h1>{{ absent_today }}</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card shadow border-0 bg-warning">
+
+            <div class="card-body text-center">
+
+                <h6>Attendance %</h6>
+
+                <h1>{{ attendance_percentage }}%</h1>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-dark text-white">
+
+                👨 Recently Added Employees
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Name</th>
+
+                            <th>Department</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for emp in recent_employees %}
+
+                        <tr>
+
+                            <td>{{ emp.employee_id }}</td>
+
+                            <td>{{ emp.first_name }} {{ emp.last_name }}</td>
+
+                            <td>{{ emp.department }}</td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="3">
+
+                                No Employees
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-6">
+
+        <div class="card shadow">
+
+            <div class="card-header bg-success text-white">
+
+                ✅ Recent Attendance
+
+            </div>
+
+            <div class="card-body">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Name</th>
+
+                            <th>Time</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for a in recent_attendance %}
+
+                        <tr>
+
+                            <td>{{ a.employee.employee_id }}</td>
+
+                            <td>{{ a.employee.first_name }} {{ a.employee.last_name }}</td>
+
+                            <td>{{ a.check_in }}</td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+
+                            <td colspan="3">
+
+                                No Attendance Today
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="row mt-4">
+
+    <div class="col-md-12 text-center">
+
+        <a href="{% url 'employee_list' %}"
+           class="btn btn-primary btn-lg me-2">
+
+            👥 Employees
+
+        </a>
+
+        <a href="{% url 'attendance_list' %}"
+           class="btn btn-success btn-lg me-2">
+
+            📅 Attendance
+
+        </a>
+
+        <a href="/admin/"
+           class="btn btn-warning btn-lg">
+
+            ⚙ Admin Panel
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

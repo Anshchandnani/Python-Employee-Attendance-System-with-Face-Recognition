@@ -1,0 +1,236 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}
+Employee Account Created
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+
+                    <h3 class="mb-0">
+                        Employee Account Created
+                    </h3>
+
+                    <span class="badge bg-light text-success fs-6">
+                        Success
+                    </span>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="alert alert-success">
+
+                        <strong>Success!</strong>
+
+                        The employee account has been created successfully.
+
+                        Please save these login credentials before leaving this page.
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="card border-primary h-100">
+
+                                <div class="card-body text-center">
+
+                                    <small class="text-muted">
+                                        Employee ID
+                                    </small>
+
+                                    <h4 class="mt-2 text-primary">
+
+                                        {{ credentials.employee_id }}
+
+                                    </h4>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="card border-info h-100">
+
+                                <div class="card-body text-center">
+
+                                    <small class="text-muted">
+                                        Username
+                                    </small>
+
+                                    <h5 class="mt-2">
+
+                                        {{ credentials.username }}
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+
+                            <div class="card border-danger h-100">
+
+                                <div class="card-body text-center">
+
+                                    <small class="text-muted">
+                                        Temporary Password
+                                    </small>
+
+                                    <h5 class="mt-2 text-danger fw-bold">
+
+                                        {{ credentials.password }}
+
+                                    </h5>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="card bg-light border-0">
+
+                        <div class="card-body">
+
+                            <h5 class="mb-3">
+                                Login Credentials
+                            </h5>
+
+                            <table class="table table-borderless mb-0">
+
+                                <tr>
+
+                                    <th width="35%">
+                                        Employee ID
+                                    </th>
+
+                                    <td>
+                                        {{ credentials.employee_id }}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <th>
+                                        Username
+                                    </th>
+
+                                    <td>
+                                        {{ credentials.username }}
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+
+                                    <th>
+                                        Temporary Password
+                                    </th>
+
+                                    <td class="text-danger fw-bold">
+                                        {{ credentials.password }}
+                                    </td>
+
+                                </tr>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-warning mt-4 mb-0">
+
+                        <strong>Important:</strong>
+
+                        Ask the employee to change the temporary password after their first login.
+
+                    </div>
+
+                </div>
+
+                <div class="card-footer bg-white">
+
+                    <div class="d-flex justify-content-between">
+
+                        <a href="{% url 'employee_list' %}"
+                           class="btn btn-secondary">
+
+                            Back to Employees
+
+                        </a>
+
+                        <div>
+
+                            <button class="btn btn-primary"
+                                    onclick="copyCredentials()">
+
+                                Copy Credentials
+
+                            </button>
+
+                            <button class="btn btn-info text-white"
+                                    onclick="window.print()">
+
+                                Print
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function copyCredentials(){
+
+    const text =
+
+`Employee ID : {{ credentials.employee_id }}
+
+Username : {{ credentials.username }}
+
+Temporary Password : {{ credentials.password }}`;
+
+    navigator.clipboard.writeText(text);
+
+    alert("Credentials copied successfully!");
+
+}
+
+</script>
+
+{% endblock %}

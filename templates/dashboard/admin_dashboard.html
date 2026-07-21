@@ -1,0 +1,389 @@
+{% extends "admin_base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                Admin Dashboard
+
+            </h2>
+
+            <p class="text-muted mb-0">
+
+                Welcome to the Employee Management System
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0 bg-primary text-white">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-users fa-2x mb-3"></i>
+
+                    <h6>Total Employees</h6>
+
+                    <h2 class="fw-bold">
+
+                        {{ total_employees }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0 bg-success text-white">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-user-check fa-2x mb-3"></i>
+
+                    <h6>Present Today</h6>
+
+                    <h2 class="fw-bold">
+
+                        {{ present_today }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0 bg-danger text-white">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-user-times fa-2x mb-3"></i>
+
+                    <h6>Absent Today</h6>
+
+                    <h2 class="fw-bold">
+
+                        {{ absent_today }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow border-0 bg-warning text-dark">
+
+                <div class="card-body text-center">
+
+                    <i class="fas fa-chart-line fa-2x mb-3"></i>
+
+                    <h6>Attendance %</h6>
+
+                    <h2 class="fw-bold">
+
+                        {{ attendance_percentage }}%
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Recent Information -->
+
+    <div class="row">
+
+        <!-- Recent Employees -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-header bg-primary text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-user-plus me-2"></i>
+
+                        Recently Added Employees
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>ID</th>
+
+                                    <th>Name</th>
+
+                                    <th>Department</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for emp in recent_employees %}
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+
+                                            {{ emp.employee_id }}
+
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ emp.first_name }}
+
+                                        {{ emp.last_name }}
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="badge bg-info text-dark">
+
+                                            {{ emp.department }}
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="3" class="text-center py-4">
+
+                                        No Employees Found
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Recent Attendance -->
+
+        <div class="col-lg-6 mb-4">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-header bg-success text-white">
+
+                    <h5 class="mb-0">
+
+                        <i class="fas fa-calendar-check me-2"></i>
+
+                        Recent Attendance
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th>ID</th>
+
+                                    <th>Name</th>
+
+                                    <th>Check In</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for a in recent_attendance %}
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+
+                                            {{ a.employee.employee_id }}
+
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ a.employee.first_name }}
+
+                                        {{ a.employee.last_name }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ a.check_in|time:"h:i A" }}
+
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+
+                                    <td colspan="3" class="text-center py-4">
+
+                                        No Attendance Today
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+
+                <i class="fas fa-bolt me-2"></i>
+
+                Quick Actions
+
+            </h5>
+
+        </div>
+
+        <div class="card-body text-center">
+
+            <a href="{% url 'add_employee' %}"
+               class="btn btn-primary btn-lg m-2">
+
+                <i class="fas fa-user-plus me-2"></i>
+
+                Add Employee
+
+            </a>
+
+            <a href="{% url 'employee_list' %}"
+               class="btn btn-info btn-lg m-2 text-white">
+
+                <i class="fas fa-users me-2"></i>
+
+                Employees
+
+            </a>
+
+            <a href="{% url 'attendance_list' %}"
+               class="btn btn-success btn-lg m-2">
+
+                <i class="fas fa-calendar-check me-2"></i>
+
+                Attendance
+
+            </a>
+
+            <a href="/admin/"
+               class="btn btn-warning btn-lg m-2">
+
+                <i class="fas fa-cogs me-2"></i>
+
+                Django Admin
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
